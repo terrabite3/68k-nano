@@ -10,3 +10,4 @@ gerbers/
 *.lst
 *.bin
 *.srec
+build*/
