@@ -33,7 +33,7 @@ will cause multiple devices to be selected. This should be avoided.
 $000000-0xFFFF     ROM (repeats 16 times)
 $100000-1FFFFF  X  Forbidden (multiple devices selected)
 $200000-2FFFFF     ROM (mirror of $000000-0FFFFF)
-$300000-$7FFFF  X  Forbidden (multiple devices selected)
+$300000-7FFFFF  X  Forbidden (multiple devices selected)
 $800000-8FFFFF     Open bus (available for expansion)
 $900000-9xxxxF     CompactFlash card
 $A00000-AxxxxF     UART
