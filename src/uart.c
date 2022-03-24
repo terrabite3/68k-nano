@@ -44,3 +44,72 @@ void printString(const char* s)
         }
     }
 }
+
+void printHex16(uint16_t num)
+{
+    char digits[7];
+    digits[0] = '0';
+    digits[1] = 'x';
+    digits[6] = 0;
+    for (uint8_t i = 0; i < 4; ++i)
+    {
+        uint8_t x = (num >> (12 - 4 * i)) & 0xF;
+        if (x < 10) 
+            digits[i + 2] = x + '0';
+        else
+            digits[i + 2] = x + 'A' - 10;
+    }
+    printString(digits);
+}
+
+void printHex16No0x(uint16_t num)
+{
+    char digits[5];
+    digits[4] = 0;
+    for (uint8_t i = 0; i < 4; ++i)
+    {
+        uint8_t x = (num >> (12 - 4 * i)) & 0xF;
+        if (x < 10) 
+            digits[i] = x + '0';
+        else
+            digits[i] = x + 'a' - 10;
+    }
+    printString(digits);
+}
+
+char printableOrDot(char c)
+{
+    if (c >= ' ' && c <= '~')
+        return c;
+    else
+        return '.';
+}
+
+void printHexBuffer(uint16_t* buffer, uint16_t buffer_len)
+{
+    uint16_t completeRows = buffer_len / 8;
+    uint16_t wordsOnIncompleteRow = buffer_len % 8;
+
+    for (uint16_t row = 0; row < completeRows; ++row)
+    {
+        uint16_t offset = row << 3;
+        printHex16No0x(row << 4);
+        printString(": ");
+
+        char text[17];
+        text[16] = 0;
+
+        for (uint8_t col = 0; col < 8; ++col)
+        {
+            printHex16No0x(buffer[col + offset]);
+            printString(" ");
+
+            text[2 * col + 1] = printableOrDot(buffer[col + offset] & 0xFF);
+            text[2 * col] = printableOrDot((buffer[col + offset] >> 8) & 0xFF);
+        }
+
+        printString(" ");
+        printString(text);
+        printString("\n");
+    }
+}

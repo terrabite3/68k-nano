@@ -7,6 +7,7 @@ add_executable(${PROJECT_NAME}
     src/test.c
     src/uart.c
     src/sleep.c
+    src/cf.c
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

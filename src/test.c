@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "type.h"
 #include "sleep.h"
+#include "cf.h"
 
 int main()
 {
@@ -11,6 +12,13 @@ int main()
     while(1)
     {
         printString("Hello, world!\n");
+        sleep(200000);
+
+        printString("\nReading CompactFlash ID\n");
+        uint16_t buffer[SECTOR_BUFFER_LEN];
+        cf_identify(buffer, SECTOR_BUFFER_LEN);
+        printHexBuffer(buffer, SECTOR_BUFFER_LEN);
+        printString("\n");
         sleep(200000);
     }
 }
