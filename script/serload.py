@@ -34,7 +34,7 @@ with open(sys.argv[1], 'rb') as infile:
     # enter loader
     ser.send_break()
     # wait for acknowledge
-    ack = ser.read(5)
+    ack = ser.read(20)
     print(ack)
     if ack != b'U':
       raise IOError('device did not acknowledge')
@@ -43,7 +43,7 @@ with open(sys.argv[1], 'rb') as infile:
     ser.flush()
     # additional delay sometimes required when sending short files
     # on macOS (dee to closing the serial port too soon?
-    time.sleep(1)
+    time.sleep(0.1)
     # send a break to finish
     ser.send_break()
 

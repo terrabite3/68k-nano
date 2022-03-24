@@ -1,11 +1,16 @@
-volatile short * const ledBoard = (short *)0x800000;
+#include "uart.h"
+#include "type.h"
+#include "sleep.h"
 
 int main()
 {
-    short counter = 0;
+    sleep(200000);
+
+    setup38400();
+
     while(1)
     {
-        *ledBoard = counter;
-        counter++;
+        printString("Hello, world!\n");
+        sleep(200000);
     }
 }

@@ -8,6 +8,10 @@ set(CMAKE_C_COMPILER   "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-gcc.py")
 # C++ currently not working
 # set(CMAKE_CXX_COMPILER "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-g++.py")
 
+add_compile_options(
+    -m68000
+)
+
 add_link_options(
     -nostartfiles -nodefaultlibs                # Exclude various libraries and such that we don't need
     -T "${CMAKE_CURRENT_LIST_DIR}/link.ld"      # Use a custom, simple linker script for our target board
