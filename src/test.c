@@ -20,5 +20,12 @@ int main()
         printHexBuffer(buffer, SECTOR_BUFFER_LEN);
         printString("\n");
         sleep(200000);
+
+
+        printString("\nReading Sector 1\n");
+        cf_read_sector(1, buffer, SECTOR_BUFFER_LEN);
+        printHexBuffer(buffer, SECTOR_BUFFER_LEN);
+        printString("\n");
+        sleep(200000);
     }
 }
