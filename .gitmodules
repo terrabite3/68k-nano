@@ -1,3 +1,0 @@
-[submodule "cf_fat"]
-	path = cf_fat
-	url = git@github.com:terrabite3/C_Memory_CompactFlash_Card_FAT_Driver.git
