@@ -4,7 +4,9 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(DOCKER_ADAPTER "${CMAKE_CURRENT_LIST_DIR}/script/m68k-tools.py")
 
 # which compilers to use for C and C++
-set(CMAKE_C_COMPILER   "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-gcc.py")
+set(CMAKE_C_COMPILER    "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-gcc.py")
+set(CMAKE_AR            "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-ar.py")
+set(CMAKE_RANLIB        "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-ranlib.py")
 # C++ currently not working
 # set(CMAKE_CXX_COMPILER "${CMAKE_CURRENT_LIST_DIR}/script/m68k-elf-g++.py")
 
@@ -13,7 +15,8 @@ add_compile_options(
 )
 
 add_link_options(
-    -nostartfiles -nodefaultlibs                # Exclude various libraries and such that we don't need
+    -static-libgcc
+    -nostartfiles -nolibc                       # Exclude various libraries and such that we don't need
     -T "${CMAKE_CURRENT_LIST_DIR}/link.ld"      # Use a custom, simple linker script for our target board
 )
 
