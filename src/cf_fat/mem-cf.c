@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-// #include "main.h"					//Global data type definitions (see https://github.com/ibexuk/C_Generic_Header_File )
 #define CF_C
 #include "mem-cf.h"
 
@@ -487,61 +486,6 @@ init_new_ffs_card_fail:
 //*********************************************************************************************
 //*********************************************************************************************
 //*********************************************************************************************
-
-
-
-
-
-
-
-//***************************************
-//***************************************
-//********** IS CARD PRESENT ? **********
-//***************************************
-//***************************************
-//Returns
-//	1 if present, 0 if not
-BYTE ffs_is_card_present (void)
-{
-
-	#ifdef	FFS_CD_PIN_FUNCTION
-		FFS_CD_PIN_FUNCTION();
-	#endif
-
-
-	//IF CD pin is low then card is present
-	// if (FFS_CD_PIN_REGISTER & FFS_CD_PIN_BIT)
-	// 	return(0);
-	// else
-	// Not sure how to check if the card is there with the CF-IDE adapter, so let's just assume.
-	return(1);
-}
-
-
-
-
-
-
-//***************************************
-//***************************************
-//********** DO CARD RESET PIN **********
-//***************************************
-//***************************************
-void ffs_card_reset_pin (BYTE pin_state)
-{
-	// I don't have a reset pin besides the system reset
-	// if (pin_state)
-	// 	FFS_RESET_PIN_REGISTER  |= FFS_RESET_PIN_BIT;
-	// else
-	// 	FFS_RESET_PIN_REGISTER  &= ~FFS_RESET_PIN_BIT;
-	
-	#ifdef	FFS_RESET_PIN_FUNCTION
-		FFS_RESET_PIN_FUNCTION();
-	#endif
-}
-
-
-
 
 
 

@@ -76,34 +76,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FFS_C_INIT		//Do only once the first time this file is used
 #define	FFS_C_INIT
 
-
-//----------------------------------------------
-//----- DEFINE TARGET COMPILER & PROCESSOR -----
-//----------------------------------------------
-//(ONLY 1 SHOULD BE INCLUDED, COMMENT OUT OTHERS - ALSO SET IN THE OTHER DRIVER .h FILE)
-// #define	FFS_USING_MICROCHIP_C18_COMPILER
-//<< add other compiler types here
-
-
-
-
-
-//---------------------------------------
-//----- CLEAR WATCHDOG TIMER DEFINE -----					//<<<<< CHECK FOR A NEW APPLICATION <<<<<
-//---------------------------------------
-//Use this if you have a watchdog timer that needs to be reset for operations that can take a long time
-//Comment out if not requried.
-
-#ifdef FFS_USING_MICROCHIP_C18_COMPILER
-
-#define	CLEAR_WATCHDOG_TIMER	ClrWdt
-
-#endif		//#ifdef FFS_USING_MICROCHIP_C18_COMPILER
-
-
-
-
-
 //------------------------
 //----- USER DEFINES -----									//<<<<< CHECK FOR A NEW APPLICATION <<<<<
 //------------------------

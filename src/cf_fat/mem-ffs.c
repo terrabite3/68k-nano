@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-// #include "main.h"					//Global data type definitions (see https://github.com/ibexuk/C_Generic_Header_File )
 #define FFS_C
 #include "mem-ffs.h"
 #include "mem-cf.h"
