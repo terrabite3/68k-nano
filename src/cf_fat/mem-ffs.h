@@ -174,28 +174,28 @@ typedef struct _FFS_FILE
 //------------------------------
 //----- EXTERNAL FUNCTIONS -----
 //------------------------------
-extern void ffs_process (void);					//< This function is not actually in our matching c file, but we include here so that application files that use this driver only have to #include "mem-ffs.h" and not the lower level card driver .h file
-extern FFS_FILE* ffs_fopen (const char *filename, const char *access_mode);
-extern int  ffs_fseek (FFS_FILE *file_pointer, long offset, int origin);
-extern int  ffs_fsetpos (FFS_FILE *file_pointer, long *position);
-extern long ffs_ftell (FFS_FILE *file_pointer);
-extern int ffs_fgetpos (FFS_FILE *file_pointer, long *position);
-extern void ffs_rewind (FFS_FILE *file_pointer);
-extern int ffs_fputc (int data, FFS_FILE *file_pointer);
-extern int ffs_fgetc (FFS_FILE *file_pointer);
-extern int ffs_fputs (const char *string, FFS_FILE *file_pointer);
-extern int ffs_fputs_char (char *string, FFS_FILE *file_pointer);
-extern char* ffs_fgets (char *string, int length, FFS_FILE *file_pointer);
-extern int ffs_fwrite (const void *buffer, int size, int count, FFS_FILE *file_pointer);
-extern int ffs_fread (void *buffer, int size, int count, FFS_FILE *file_pointer);
-extern int ffs_fflush (FFS_FILE *file_pointer);
-extern int	ffs_fclose (FFS_FILE *file_pointer);
-extern int ffs_remove (const char *filename);
-extern int ffs_rename (const char *old_filename, const char *new_filename);
-extern void ffs_clearerr (FFS_FILE *file_pointer);
-extern int ffs_feof (FFS_FILE *file_pointer);
-extern int ffs_ferror (FFS_FILE *file_pointer);
-extern BYTE ffs_is_card_available (void);
+void ffs_process (void);					//< This function is not actually in our matching c file, but we include here so that application files that use this driver only have to #include "mem-ffs.h" and not the lower level card driver .h file
+FFS_FILE* ffs_fopen (const char *filename, const char *access_mode);
+int  ffs_fseek (FFS_FILE *file_pointer, long offset, int origin);
+int  ffs_fsetpos (FFS_FILE *file_pointer, long *position);
+long ffs_ftell (FFS_FILE *file_pointer);
+int ffs_fgetpos (FFS_FILE *file_pointer, long *position);
+void ffs_rewind (FFS_FILE *file_pointer);
+int ffs_fputc (int data, FFS_FILE *file_pointer);
+int ffs_fgetc (FFS_FILE *file_pointer);
+int ffs_fputs (const char *string, FFS_FILE *file_pointer);
+int ffs_fputs_char (char *string, FFS_FILE *file_pointer);
+char* ffs_fgets (char *string, int length, FFS_FILE *file_pointer);
+int ffs_fwrite (const void *buffer, int size, int count, FFS_FILE *file_pointer);
+int ffs_fread (void *buffer, int size, int count, FFS_FILE *file_pointer);
+int ffs_fflush (FFS_FILE *file_pointer);
+int	ffs_fclose (FFS_FILE *file_pointer);
+int ffs_remove (const char *filename);
+int ffs_rename (const char *old_filename, const char *new_filename);
+void ffs_clearerr (FFS_FILE *file_pointer);
+int ffs_feof (FFS_FILE *file_pointer);
+int ffs_ferror (FFS_FILE *file_pointer);
+BYTE ffs_is_card_available (void);
 
 
 
