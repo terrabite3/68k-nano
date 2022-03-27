@@ -11,3 +11,4 @@ gerbers/
 *.bin
 *.srec
 build*/
+*-backups/
