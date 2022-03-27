@@ -30,14 +30,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-#define FFS_C
 #include "mem-ffs.h"
 #include "mem-cf.h"
 
 
 
+//-----------------------------------
+//----- INTERNAL ONLY FUNCTIONS -----
+//-----------------------------------
+DWORD ffs_find_file (const char *filename, DWORD *file_size, BYTE *attribute_byte, DWORD *directory_entry_sector, BYTE *directory_entry_within_sector, BYTE *read_file_name, BYTE *read_file_extension);
+BYTE ffs_convert_filename_to_dos (const char *source_filename, BYTE *dos_filename, BYTE *dos_extension);
+BYTE ffs_read_next_directory_entry (BYTE *file_name, BYTE *file_extension, BYTE *attribute_byte, DWORD *file_size, DWORD *cluster_number, BYTE start_from_beginning, DWORD *directory_entry_sector, BYTE *directory_entry_within_sector);
+void ffs_overwrite_last_directory_entry (BYTE *file_name, BYTE *file_extension, BYTE *attribute_byte, DWORD *file_size, DWORD *cluster_number);
+DWORD get_file_start_cluster(FFS_FILE *file_pointer);
+BYTE ffs_create_new_file (const char *file_name, DWORD *write_file_start_cluster, DWORD *directory_entry_sector, BYTE *directory_entry_within_sector);
+DWORD ffs_get_next_free_cluster (void);
+DWORD ffs_get_next_cluster_no (DWORD current_cluster);
+void ffs_modify_cluster_entry_in_fat (DWORD cluster_to_modify, DWORD cluster_entry_new_value);
 
 
+//--------------------------------------------------
+//----- INTERNAL & EXTERNAL MEMORY DEFINITIONS -----
+//--------------------------------------------------
+FFS_FILE ffs_file[FFS_FOPEN_MAX];
+BYTE ffs_card_ok = 0;
+BYTE ffs_10ms_timer = 0;
+WORD ffs_bytes_per_sector;
+
+
+BYTE ffs_general_buffer[512];	
 
 
 //*******************************

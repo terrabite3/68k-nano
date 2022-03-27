@@ -30,13 +30,55 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-#define CF_C
 #include "mem-cf.h"
 
 #include "mem-ffs.h"
 
 
 
+//----------------------
+//----- IO DEFINES -----
+//----------------------
+#define CF_DATA     (*((volatile WORD*) 0x900000))
+#define CF_ERROR    (*((volatile BYTE*) 0x900003))
+#define CF_FEATURE  (*((volatile BYTE*) 0x900003))
+#define CF_COUNT    (*((volatile BYTE*) 0x900005))
+#define CF_LBA0     (*((volatile BYTE*) 0x900007))
+#define CF_LBA1     (*((volatile BYTE*) 0x900009))
+#define CF_LBA2     (*((volatile BYTE*) 0x90000B))
+#define CF_LBA3     (*((volatile BYTE*) 0x90000D))
+#define CF_STATUS   (*((volatile BYTE*) 0x90000F))
+#define CF_COMMAND  (*((volatile BYTE*) 0x90000F))
+
+
+
+//--------------------------------------------
+//----- INTERNAL ONLY MEMORY DEFINITIONS -----
+//--------------------------------------------
+BYTE sm_ffs_process = FFS_PROCESS_NO_CARD;
+WORD file_system_information_sector;
+BYTE ffs_no_of_heads;
+BYTE ffs_no_of_sectors_per_track;
+DWORD ffs_no_of_partition_sectors;
+
+
+
+//--------------------------------------------------
+//----- INTERNAL & EXTERNAL MEMORY DEFINITIONS -----
+//--------------------------------------------------
+WORD number_of_root_directory_sectors;				//Only used by FAT16, 0 for FAT32
+BYTE ffs_buffer_needs_writing_to_card;
+DWORD ffs_buffer_contains_lba = 0xffffffff;
+DWORD fat1_start_sector;
+DWORD root_directory_start_sector_cluster;			//Start sector for FAT16, start clustor for FAT32
+DWORD data_area_start_sector;
+BYTE disk_is_fat_32;
+BYTE sectors_per_cluster;
+DWORD last_found_free_cluster;
+DWORD sectors_per_fat;
+BYTE active_fat_table_flags;
+DWORD read_write_directory_last_lba;
+WORD read_write_directory_last_entry;
 
 
 

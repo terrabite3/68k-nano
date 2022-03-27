@@ -59,7 +59,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //For further information please see the project technical manual
 
 
-
+#ifndef MEM_FFS_H
+#define MEM_FFS_H
 
 #include "mem-types.h"
 
@@ -73,8 +74,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //********** DEFINES **********
 //*****************************
 //*****************************
-#ifndef FFS_C_INIT		//Do only once the first time this file is used
-#define	FFS_C_INIT
 
 //------------------------
 //----- USER DEFINES -----									//<<<<< CHECK FOR A NEW APPLICATION <<<<<
@@ -163,8 +162,6 @@ typedef struct _FFS_FILE
 #define	FFS_EOF				-1
 
 
-#endif // FFS_C_INIT
-
 
 
 
@@ -173,53 +170,7 @@ typedef struct _FFS_FILE
 //********** FUNCTIONS **********
 //*******************************
 //*******************************
-#ifdef FFS_C
-//-----------------------------------
-//----- INTERNAL ONLY FUNCTIONS -----
-//-----------------------------------
-DWORD ffs_find_file (const char *filename, DWORD *file_size, BYTE *attribute_byte, DWORD *directory_entry_sector, BYTE *directory_entry_within_sector, BYTE *read_file_name, BYTE *read_file_extension);
-BYTE ffs_convert_filename_to_dos (const char *source_filename, BYTE *dos_filename, BYTE *dos_extension);
-BYTE ffs_read_next_directory_entry (BYTE *file_name, BYTE *file_extension, BYTE *attribute_byte, DWORD *file_size, DWORD *cluster_number, BYTE start_from_beginning, DWORD *directory_entry_sector, BYTE *directory_entry_within_sector);
-void ffs_overwrite_last_directory_entry (BYTE *file_name, BYTE *file_extension, BYTE *attribute_byte, DWORD *file_size, DWORD *cluster_number);
-DWORD get_file_start_cluster(FFS_FILE *file_pointer);
-BYTE ffs_create_new_file (const char *file_name, DWORD *write_file_start_cluster, DWORD *directory_entry_sector, BYTE *directory_entry_within_sector);
-DWORD ffs_get_next_free_cluster (void);
-DWORD ffs_get_next_cluster_no (DWORD current_cluster);
-void ffs_modify_cluster_entry_in_fat (DWORD cluster_to_modify, DWORD cluster_entry_new_value);
 
-
-//-----------------------------------------
-//----- INTERNAL & EXTERNAL FUNCTIONS -----
-//-----------------------------------------
-//(Also defined below as extern)
-FFS_FILE* ffs_fopen (const char *filename, const char *access_mode);
-int  ffs_fseek (FFS_FILE *file_pointer, long offset, int origin);
-int  ffs_fsetpos (FFS_FILE *file_pointer, long *position);
-long ffs_ftell (FFS_FILE *file_pointer);
-int ffs_fgetpos (FFS_FILE *file_pointer, long *position);
-void ffs_rewind (FFS_FILE *file_pointer);
-int ffs_fputc (int data, FFS_FILE *file_pointer);
-int ffs_fgetc (FFS_FILE *file_pointer);
-int ffs_fputs (const char *string, FFS_FILE *file_pointer);
-int ffs_fputs_char (char *string, FFS_FILE *file_pointer);
-char* ffs_fgets (char *string, int length, FFS_FILE *file_pointer);
-int ffs_fwrite (const void *buffer, int size, int count, FFS_FILE *file_pointer);
-int ffs_fread (void *buffer, int size, int count, FFS_FILE *file_pointer);
-int ffs_fflush (FFS_FILE *file_pointer);
-int	ffs_fclose (FFS_FILE *file_pointer);
-int ffs_remove (const char *filename);
-int ffs_rename (const char *old_filename, const char *new_filename);
-void ffs_clearerr (FFS_FILE *file_pointer);
-int ffs_feof (FFS_FILE *file_pointer);
-int ffs_ferror (FFS_FILE *file_pointer);
-BYTE ffs_is_card_available (void);
-
-
-
-#define	ffs_putc(data, file_pointer)	ffs_fputc(data, file_pointer)			//Defined in header file - these 2 functions are equivalent
-#define ffs_getc(file_pointer)		ffs_fgetc(file_pointer)						//Defined in header file - these 2 functions are equivalent
-
-#else
 //------------------------------
 //----- EXTERNAL FUNCTIONS -----
 //------------------------------
@@ -251,7 +202,6 @@ extern BYTE ffs_is_card_available (void);
 #define	ffs_putc(data, file_pointer)	ffs_fputc(data, file_pointer)			//Defined in header file - these 2 functions are equivalent
 #define ffs_getc(file_pointer)		ffs_fgetc(file_pointer)						//Defined in header file - these 2 functions are equivalent
 
-#endif
 
 
 
@@ -261,46 +211,7 @@ extern BYTE ffs_is_card_available (void);
 //********** MEMORY **********
 //****************************
 //****************************
-#ifdef FFS_C
-//--------------------------------------------
-//----- INTERNAL ONLY MEMORY DEFINITIONS -----
-//--------------------------------------------
 
-
-
-
-
-
-
-//--------------------------------------------------
-//----- INTERNAL & EXTERNAL MEMORY DEFINITIONS -----
-//--------------------------------------------------
-//(Also defined below as extern)
-FFS_FILE ffs_file[FFS_FOPEN_MAX];
-BYTE ffs_card_ok = 0;
-BYTE ffs_10ms_timer = 0;
-WORD ffs_bytes_per_sector;
-
-
-
-
-
-//----- 512 BYTE DRIVER DATA BUFFER -----
-//(Required as read and write operations are carried out on complete sectors which are 512 bytes in size
-//We use a special big section of ram defiend in the linker script to give us our large ram buffer (C18 large array requirement):
-//N.B. This buffer is only referenced through a pointer by the driver to allow for compillers and processors that have this requirement.
-
-#ifdef FFS_USING_MICROCHIP_C18_COMPILER
-
-#pragma udata ffs_512_byte_ram_section				//This is the PIC C18 compiler command to use the specially defined section in the linker script (this project uses a modified linker script)
-BYTE ffs_general_buffer[512];								//<<<<< CHECK FOR A NEW APPLICATION <<<<<
-#pragma udata
-
-#endif			//#ifdef FFS_USING_MICROCHIP_C18_COMPILER
-
-BYTE ffs_general_buffer[512];								//<<<<< CHECK FOR A NEW APPLICATION <<<<<
-
-#else	//FFS_C
 //---------------------------------------
 //----- EXTERNAL MEMORY DEFINITIONS -----
 //---------------------------------------
@@ -318,16 +229,9 @@ extern WORD ffs_bytes_per_sector;
 //We use a special big section of ram defiend in the linker script to give us our large ram buffer (C18 large array requirement):
 //N.B. This buffer is only referenced through a pointer by the driver to allow for compillers and processors that have this requirement.
 
-#ifdef FFS_USING_MICROCHIP_C18_COMPILER
-
-#pragma udata ffs_512_byte_ram_section				//This is the PIC C18 compiler command to use the specially defined section in the linker script (this project uses a modified linker script)
-extern BYTE ffs_general_buffer[512];								//<<<<< CHECK FOR A NEW APPLICATION <<<<<
-#pragma udata
-
-#endif			//#ifdef FFS_USING_MICROCHIP_C18_COMPILER
 
 extern BYTE ffs_general_buffer[512];								//<<<<< CHECK FOR A NEW APPLICATION <<<<<
 
-#endif	//FFS_C
 
 
+#endif // MEM_FFS_H
