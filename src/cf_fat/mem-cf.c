@@ -39,7 +39,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-#define LED_BOARD  (*((volatile short*) 0x800000))
 
 
 //************************************************************
@@ -63,12 +62,10 @@ void ffs_process (void)
 	BYTE number_of_copies_of_fat;
 	BYTE *buffer_pointer;
 
-	// There's a bunch of stages covered below in the original driver to handle card insertion and removal.
+	// There were a bunch of stages covered below in the original driver to handle card insertion and removal.
 	// Since we're using an IDE to CF adapter, we don't have access to some of these pins,
 	// so we have to assume that the card is present -- at least for now.
 	// I'll reproduce the relevant stuff in a simpler form.
-
-LED_BOARD = 1;
 
 	// First time through
 	if (sm_ffs_process == FFS_PROCESS_NO_CARD)
@@ -82,171 +79,34 @@ LED_BOARD = 1;
 	}
 
 
-LED_BOARD = 2;
-
 	// If we already did all the initialization stuff below, skip it
 	if (sm_ffs_process == FFS_PROCESS_CARD_INITIALSIED)
 	{
-LED_BOARD = 3;
 		return;
 	}
-
-
-	// switch (sm_ffs_process)
-	// {
-	// case FFS_PROCESS_NO_CARD:
-	// 	//-------------------------------
-	// 	//----- NO CARD IS INSERTED -----
-	// 	//-------------------------------
-		
-	// 	ffs_card_ok = 0;					//Flag that card not OK
-
-	// 	//Reset all file handlers
-	// 	for (b_temp = 0; b_temp < FFS_FOPEN_MAX; b_temp++)
-	// 		ffs_file[b_temp].flags.bits.file_is_open = 0;
-
-	// 	//Has a card has been inserted?
-	// 	if (ffs_is_card_present() == 0)
-	// 		return;
-
-	// 	//A card has been inserted
-	// 	//Pause for 500mS seconds
-	// 	// ffs_10ms_timer = 50; // Don't bother with the wait
-	// 	// sm_ffs_process = FFS_PROCESS_WAIT_FOR_CARD_FULLY_INSERTED;
-
-	// 	// We can't do any reset stuff, so skip straight to reading it -- next time
-	// 	sm_ffs_process = FFS_PROCESS_WAIT_FOR_CARD_RESET;
-
-	// 	return;
-
-
-    // case FFS_PROCESS_WAIT_FOR_CARD_FULLY_INSERTED:
-	// 	//------------------------------------------------------------
-	// 	//----- CARD INSERTED - WAIT FOR IT TO BE FULLY INSERTED -----
-	// 	//------------------------------------------------------------
-	// 	//(To allow for users that don't insert the card in one nice quick movement)
-
-	// 	//Ensure card is still inserted
-	// 	if (ffs_is_card_present() == 0)
-	// 	{
-	// 		sm_ffs_process = FFS_PROCESS_NO_CARD;
-	// 		return;
-	// 	}
-
-	// 	//Wait for timer to expire
-	// 	if (ffs_10ms_timer)
-	// 		return;
-		
-	// 	//Card has been inserted for 500ms - reset the card
-	// 	ffs_card_reset_pin(1);
-	// 	// FFS_REG = 1;						//Set reg pin high
-
-	// 	// ffs_10ms_timer = 2;				//(Actually need about 4mS, but set to 2 to ensure that at least 10mS passes from this timer)
-	// 	sm_ffs_process = FFS_PROCESS_COMPLETE_RESET;
-
-	// 	return;
-
-
-	// case FFS_PROCESS_COMPLETE_RESET:
-	// 	//------------------------------
-	// 	//----- COMPLETE THE RESET -----
-	// 	//------------------------------
-
-	// 	//Wait for timer to expire
-	// 	if (ffs_10ms_timer)
-	// 		return;
-
-	// 	//Bring the card out of reset
-	// 	ffs_card_reset_pin(0);
-
-	// 	//Pause 500mS for card to be ready
-	// 	// ffs_10ms_timer = 50;
-	// 	sm_ffs_process = FFS_PROCESS_WAIT_FOR_CARD_RESET;
-	// 	return;
-
-
-    // case FFS_PROCESS_WAIT_FOR_CARD_RESET:
-	// 	//------------------------------------------------------
-	// 	//----- CARD INSERTED - WAIT FOR RESET TO COMPLETE -----
-	// 	//------------------------------------------------------
-
-	// 	//Wait for timer to expire
-	// 	if (ffs_10ms_timer)
-	// 		return;
-
-	// 	//Ensure card is still inserted
-	// 	if (ffs_is_card_present() == 0)
-	// 	{
-	// 		sm_ffs_process = FFS_PROCESS_NO_CARD;
-	// 		return;
-	// 	}
-
-	// 	//Initialise the card
-	// 	sm_ffs_process = FFS_PROCESS_CARD_INITIALSIED;
-
-	// 	//Actually exit this switch statement to run the card initialise procedure below (this is the only state that doesn't return)
-	// 	break;
-
-    // case FFS_PROCESS_CARD_INITIALSIED:
-	// 	//-----------------------------------------
-	// 	//----- CARD INSERTED AND INITIALSIED -----
-	// 	//-----------------------------------------
-
-	// 	//If card is still inserted then exit
-	// 	if (ffs_is_card_present())
-	// 		return;
-
-	// 	//CARD HAS BEEN REMOVED
-	// 	ffs_card_ok = 0;
-		
-	// 	sm_ffs_process = FFS_PROCESS_NO_CARD;
-
-	// 	return;
-
-
-	// default:
-	// 	sm_ffs_process = FFS_PROCESS_NO_CARD;
-	// 	return;
-	// }
-
-	//---------------------------------------------
-	//---------------------------------------------
-	//----- INITIALISE NEW COMPACT FLASH CARD -----
-	//---------------------------------------------
-	//---------------------------------------------
-	//(The only state that exits the switch statement above is FFS_PROCESS_WAIT_FOR_CARD_RESET when it completes)
-
-	// ffs_card_ok = 0;					//Default to card not OK
 
 
 	//---------------------------------------------------
 	//----- READ CARD SETUP (CF Identify Drive Cmd) -----
 	//---------------------------------------------------
 
-LED_BOARD = 4;
-// Added this from cf.c
     // Waiting for drive not busy
     while((CF_STATUS) & 0x80);
 
-LED_BOARD = 5;
 	//Write the 'Select Card/Head' register [LBA27:24 - bits3:0]
 	CF_LBA3 = 0;
 
 	//Send 'Identify Drive' instruction
 	CF_COMMAND = 0xec;
 
-// added this from cf.c
-// I added this because my ffs_read_word() doesn't have any way to check if the CF is ready.
     // Waiting for DRQ
     while(!(CF_STATUS & 0x08)); 
 
-LED_BOARD = 6;
 	//CHECK GENERAL CONFIGURATION WORD (0X848A = CF CARD)
 	w_temp = ffs_read_word();
 
 	if (w_temp != 0x848a)
 	{
-LED_BOARD = 7;
 		goto init_new_ffs_card_fail;
 	}
 	//Dump the next 4 words
@@ -281,20 +141,16 @@ LED_BOARD = 7;
 	w_temp = ffs_read_word();
 	if (w_temp > 0xff)						//Can't be more than 255 heads
 	{
-LED_BOARD = 8;
 		goto init_new_ffs_card_fail;
 	}
-LED_BOARD = 9;
 	ffs_no_of_heads = (BYTE)w_temp;
 
 	//Get the number of sectors per track (word 56)
 	w_temp = ffs_read_word();
 	if (w_temp > 0xff)						//Can't be more than 64 sectors per track
 	{
-LED_BOARD = 10;
 		goto init_new_ffs_card_fail;
 	}
-LED_BOARD = 11;
 	ffs_no_of_sectors_per_track = (BYTE)w_temp;
 
 	//Set the number of bytes per sector before we move on to general access
@@ -312,22 +168,18 @@ LED_BOARD = 11;
 	// Write the 'Sector Count' register (no of sectors to be transfered to complete the operation)
 	CF_COUNT = 0x01;
 
-LED_BOARD = 12;
     // Waiting for drive not busy
     while((CF_STATUS) & 0x80);
-LED_BOARD = 3;
 
 	//Read sector(s) command
 	CF_COMMAND = 0x20;
 
     // Waiting for DRQ
     while(!(CF_STATUS & 0x08)); 
-LED_BOARD = 14;
 
 	//Read and dump the first 223 words (446 bytes of boot up executable code))
 	for (b_temp = 0; b_temp < 223; b_temp++)
 		ffs_read_word();
-LED_BOARD = 15;
 
 	//Now at start of the partition table [0x000001be]
 
@@ -371,15 +223,12 @@ LED_BOARD = 15;
 
 	//WE NOW HAVE THE START ADDRESS OF THE FIRST PARTITION (THE ONLY PARTITION WE LOOK AT)
 
-LED_BOARD = 16;
 
 	//Read the 'Type Of Partition' [0x000001c2]
 	//(We accept FAT16 or FAT32)
+	// Replaced two read_byte()s with a single read_word(), and grab the byte we care about
 	w_temp = ffs_read_word();
-	// TODO: Is this the correct byte?
-	// b_temp = w_temp >> 8;
 	b_temp = w_temp & 0xFF;
-	// b_temp = ffs_read_byte();
 
 	if (b_temp == 0x04)						//FAT16 (smaller than 32MB)
 		disk_is_fat_32 = 0;
@@ -393,12 +242,11 @@ LED_BOARD = 16;
 		disk_is_fat_32 = 0;
 	else
 	{
-LED_BOARD = 17;
 		goto init_new_ffs_card_fail;
 	}
 
 	//Get end of partition - head [0x000001c3]
-	// ffs_read_byte();
+	// We already read this byte as part of the last word
 
 	//Get end of partition - Cylinder & Sector [0x000001c4]
 	ffs_read_word();
@@ -419,9 +267,7 @@ LED_BOARD = 17;
 	//Setup for finding the FAT1 table start address root directory start address and data area start address
 	lba = main_partition_start_sector;
 
-LED_BOARD = 18;
 	ffs_read_sector_to_buffer(lba);
-LED_BOARD = 19;
 	buffer_pointer = &FFS_DRIVER_GEN_512_BYTE_BUFFER[0];
 
 	//Dump jump code & OEM name (11 bytes)
@@ -434,7 +280,6 @@ LED_BOARD = 19;
 	ffs_bytes_per_sector |= (WORD)(*buffer_pointer++) << 8;
 	if (ffs_bytes_per_sector > 512)
 	{
-LED_BOARD = 20;
 		goto init_new_ffs_card_fail;
 	}
 
@@ -450,7 +295,6 @@ LED_BOARD = 20;
 	}
 	if (b_temp != 1)
 	{
-LED_BOARD = 21;
 		goto init_new_ffs_card_fail;
 	}
 
@@ -465,7 +309,6 @@ LED_BOARD = 21;
 	number_of_copies_of_fat = *buffer_pointer++;
 	if ((number_of_copies_of_fat > 4) || (number_of_copies_of_fat == 0))		//We set a limit on there being a maximum of 4 copies of fat
 	{
-LED_BOARD = 22;
 		goto init_new_ffs_card_fail;
 	}
 
@@ -484,7 +327,6 @@ LED_BOARD = 22;
 	//(Should be 0xF8 for hard disk)
 	if (*buffer_pointer++ != 0xf8)
 	{
-LED_BOARD = 23;
 		goto init_new_ffs_card_fail;
 	}
 
@@ -544,7 +386,6 @@ LED_BOARD = 23;
 			//Bits 3:0 set which FAT table is active
 			if ((w_temp & 0x000f) > number_of_copies_of_fat)
 			{
-LED_BOARD = 24;
 				goto init_new_ffs_card_fail;
 			}
 			
@@ -574,7 +415,6 @@ LED_BOARD = 24;
 				active_fat_table_flags++;
 			}
 		}
-LED_BOARD = 25;
 
 		//Get 'Version of FAT32 Drive' [# + 0x002A]
 		//(High Byte = Major Version, Low Byte = Minor Version)
@@ -616,10 +456,8 @@ LED_BOARD = 25;
 	//Do CF Driver specific initialisations
 	last_found_free_cluster = 0;		//When we next look for a free cluster, start from the beginning
 
-	// I moved this down here
-	//Initialise the card
+	// Mark the card as initialized so we don't repeat this next time
 	sm_ffs_process = FFS_PROCESS_CARD_INITIALSIED;
-LED_BOARD = 26;
 
 	return;
 
@@ -628,7 +466,6 @@ LED_BOARD = 26;
 //----- CARD IS NOT COMPATIBLE -----
 //----------------------------------
 init_new_ffs_card_fail:
-	// FFS_CE = 1;						//Deselect the card
 	ffs_card_ok = 0;				//Flag that the card is not OK
 	return;
 }
@@ -720,7 +557,8 @@ void ffs_card_reset_pin (BYTE pin_state)
 void ffs_read_sector_to_buffer (DWORD sector_lba)
 {
 	WORD count;
-	// BYTE *buffer_pointer;
+	// The original driver used a BYTE buffer, but we're going to read it by WORD,
+	// so may as well treat it like a WORD buffer.
 	WORD *buffer_pointer;
 
 
@@ -730,16 +568,12 @@ void ffs_read_sector_to_buffer (DWORD sector_lba)
 		return;
 	}
 
-	// FFS_CE = 0;										//Select the card
-
 
 	//----- IF THE BUFFER CONTAINS DATA THAT IS WAITING TO BE WRITTEN THEN WRITE IT FIRST -----
 	if (ffs_buffer_needs_writing_to_card)
 	{
 		if (ffs_buffer_contains_lba != 0xffffffff)			//This should not be possible but check is made just in case!
 			ffs_write_sector_from_buffer(ffs_buffer_contains_lba);
-
-		// FFS_CE = 0;										//Select the card again
 
 		ffs_buffer_needs_writing_to_card = 0;
 	}
@@ -762,7 +596,6 @@ void ffs_read_sector_to_buffer (DWORD sector_lba)
 	//0x07 - Write the 'Command' register
 	CF_COMMAND = 0x20;
 
-
     // Waiting for DRQ
     while(!(CF_STATUS & 0x08)); 
 
@@ -772,12 +605,9 @@ void ffs_read_sector_to_buffer (DWORD sector_lba)
 	//----- READ THE SECTOR INTO THE BUFFER -----
 	buffer_pointer = (WORD*) &FFS_DRIVER_GEN_512_BYTE_BUFFER[0];
 
-	// for (count = 0; count < ffs_bytes_per_sector; count++)
 	for (count = 0; count < ffs_bytes_per_sector; count += 2)
 	{
-		// TODO: Is this right? Do I need to do a byte swap?
-		// *buffer_pointer++ = CF_DATA;
-
+		// Swap the bytes because FAT is little-endian but M68k is big-endian
 		WORD temp = CF_DATA;
 		temp = (temp << 8) | (temp >> 8);
 		*buffer_pointer++ = temp;
@@ -800,7 +630,6 @@ void ffs_read_sector_to_buffer (DWORD sector_lba)
 //**********************************************
 void ffs_write_sector_from_buffer (DWORD sector_lba)
 {
-	// TODO: Probably need a byte swap later
 	WORD count;
 	WORD *buffer_pointer;
 	
@@ -827,16 +656,15 @@ void ffs_write_sector_from_buffer (DWORD sector_lba)
 	//0x07 - Write the 'Command' register
 	CF_COMMAND = 0x30;
 
-
     // Waiting for DRQ
     while(!(CF_STATUS & 0x08)); 
 
 	//----- WRITE THE BUFFER TO THE CARD SECTOR -----
-	// for (count = 0; count < ffs_bytes_per_sector; count++)
 	for (count = 0; count < ffs_bytes_per_sector; count += 2)
 	{
-		// ffs_write_byte(*buffer_pointer++);
-		CF_DATA = *buffer_pointer++;
+		WORD temp = *buffer_pointer++;
+		temp = (temp >> 8) | (temp << 8);
+		CF_DATA = temp;
 	}
 	
 
